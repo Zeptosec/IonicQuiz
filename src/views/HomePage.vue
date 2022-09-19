@@ -2,28 +2,32 @@
   <ion-page>
     <ion-header :translucent="true">
       <ion-toolbar>
-        <ion-title>Blank</ion-title>
+        <ion-title>Quizz</ion-title>
       </ion-toolbar>
     </ion-header>
-    
-    <ion-content :fullscreen="true">
-      <ion-header collapse="condense">
-        <ion-toolbar>
-          <ion-title size="large">Blank</ion-title>
-        </ion-toolbar>
-      </ion-header>
-    
-      <div id="container">
-        <strong>Ready to create an app?</strong>
-        <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+
+    <ion-content :fullscreen="true" ref="content">
+      <div class="center-page">
+        <div class="container">
+          <ion-button @click="() => router.push('/quiz')">Practice</ion-button>
+          <ion-button @click="() => router.push('/test')">Test</ion-button>
+          <ion-button @click="() => router.push('/leaderboard')">Leaderboard</ion-button>
+        </div>
       </div>
+      <!-- <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+        <ion-fab-button @click="() => router.push('/new')">
+          <ion-icon :icon="add"></ion-icon>
+        </ion-fab-button>
+      </ion-fab>   -->
     </ion-content>
   </ion-page>
 </template>
 
 <script lang="ts">
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/vue';
-import { defineComponent } from 'vue';
+import { add, heart } from 'ionicons/icons';
+import { useRouter } from 'vue-router';
+import { IonContent, IonHeader, IonGrid, IonRow, IonCol, IonCheckbox, IonItem, IonPage, IonTitle, IonFab, IonFabButton, IonList, IonToolbar, IonButton, IonIcon } from '@ionic/vue';
+import { defineComponent, ref } from 'vue';
 
 export default defineComponent({
   name: 'HomePage',
@@ -32,15 +36,35 @@ export default defineComponent({
     IonHeader,
     IonPage,
     IonTitle,
-    IonToolbar
+    IonToolbar,
+    IonButton,
+  },
+  setup() {
+    return {
+      add, heart,
+      router: useRouter(),
+    }
   }
 });
 </script>
 
 <style scoped>
+.center-page {
+  display: grid;
+  margin: auto;
+  width: 200px;
+  height: 100%;
+  align-items: center;
+}
+
+.container {
+  display: grid;
+  gap: 10px;
+}
+
 #container {
   text-align: center;
-  
+
   position: absolute;
   left: 0;
   right: 0;
@@ -56,9 +80,9 @@ export default defineComponent({
 #container p {
   font-size: 16px;
   line-height: 22px;
-  
+
   color: #8c8c8c;
-  
+
   margin: 0;
 }
 
