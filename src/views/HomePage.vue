@@ -3,6 +3,8 @@
     <ion-header :translucent="true">
       <ion-toolbar>
         <ion-title>Quizz</ion-title>
+        <ion-icon :icon="moon" slot="end" size="large"></ion-icon>
+        <ion-toggle :checked="isDark" @ion-change="toggleDark" slot="end"></ion-toggle>
       </ion-toolbar>
     </ion-header>
 
@@ -24,15 +26,17 @@
 </template>
 
 <script lang="ts">
-import { add, heart } from 'ionicons/icons';
+import { add, body, heart, moon } from 'ionicons/icons';
 import { useRouter } from 'vue-router';
-import { IonContent, IonHeader, IonGrid, IonRow, IonCol, IonCheckbox, IonItem, IonPage, IonTitle, IonFab, IonFabButton, IonList, IonToolbar, IonButton, IonIcon } from '@ionic/vue';
+import { IonContent, IonHeader, IonToggle, IonLabel, IonNote, IonBadge, IonCheckbox, IonItem, IonPage, IonTitle, IonFab, IonFabButton, IonList, IonToolbar, IonButton, IonIcon } from '@ionic/vue';
 import { defineComponent, ref } from 'vue';
 
 export default defineComponent({
   name: 'HomePage',
   components: {
     IonContent,
+    IonIcon,
+    IonToggle,
     IonHeader,
     IonPage,
     IonTitle,
@@ -40,10 +44,30 @@ export default defineComponent({
     IonButton,
   },
   setup() {
+    //document.body.classList.toggle('dark', false)
+    let prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+    function toggleDarkTheme(val: any) {
+      isDark = val;
+      localStorage.setItem("dark", `${val}`);
+      document.body.classList.toggle('dark', val);
+    }
+    let isDark = prefersDark.matches
+    if (localStorage.getItem("dark") == null) {
+      localStorage.setItem("dark", `${isDark}`);
+    } else {
+      isDark = localStorage.getItem("dark") == "true";
+    }
+    toggleDarkTheme(isDark)
+    prefersDark.addEventListener("change", (mediaQuery) => toggleDarkTheme(mediaQuery.matches));
     return {
-      add, heart,
+      add, heart, moon, toggleDarkTheme, isDark,
       router: useRouter(),
     }
+  },
+  methods: {
+    toggleDark(e: any) {
+      this.toggleDarkTheme(e.detail.checked)
+    },
   }
 });
 </script>

@@ -56,7 +56,15 @@ export default defineComponent({
             correct: null,
             answer: "",
             rightCounter: 0,
-            wrongCounter: 0
+            wrongCounter: 0,
+            questions: [
+                {
+                    title: "nauja",
+                    correctAnswer: "correct",
+                    selected: null,
+                    choices: ["a","b","c","d"]
+                }
+            ]
         }
     },
     methods: {
@@ -69,24 +77,28 @@ export default defineComponent({
                 return;
             }
             this.isLoading = true;
-            const res = await fetch("https://latinapi.cyclic.app/api/tasks/check", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ answer: this.answer, id: this.task._id })
-            });
-            const json = await res.json();
-            if (!res.ok) {
-                this.message = json.error;
-            } else {
-                if (this.correct == null) {
-                    if (json.isCorrect) {
-                        this.rightCounter += 1;
-                    } else {
-                        this.wrongCounter += 1;
+            try {
+                const res = await fetch("https://latinapi.cyclic.app/api/tasks/check", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ answer: this.answer, id: this.task._id })
+                });
+                const json = await res.json();
+                if (!res.ok) {
+                    this.message = json.error;
+                } else {
+                    if (this.correct == null) {
+                        if (json.isCorrect) {
+                            this.rightCounter += 1;
+                        } else {
+                            this.wrongCounter += 1;
+                        }
                     }
+                    this.correct = json.isCorrect;
+                    this.message = json.isCorrect ? "Correct!" : "Wrong!";
                 }
-                this.correct = json.isCorrect;
-                this.message = json.isCorrect ? "Correct!" : "Wrong!";
+            } catch (err) {
+                this.message = "Check your internet connection and try again.";
             }
             this.isLoading = false;
         },
@@ -104,7 +116,7 @@ export default defineComponent({
                     this.message = json.error;
                 }
             } catch (err: any) {
-                this.message = `Error: ${err.message}`;
+                this.message = `Check your internet connection and reload.`;
             }
         }
     },
